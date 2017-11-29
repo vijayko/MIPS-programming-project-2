@@ -48,6 +48,10 @@
 					jr $ra
 			bgt $v1, 15, exit
 
+        subprogram2:
+            
+        subprogram3:
+
 		exit: 
 			la $a0, error
 	        addi $v0, $zero, 4
