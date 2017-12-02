@@ -9,7 +9,7 @@
             li $a1, 1001
             syscall 
 
-            la $s0, input 
+            la $s0, max_input 
             li $s1, 0
             li $s2, 0
 
@@ -97,20 +97,62 @@
                 addi $t9, $t9, 1
                 j convert
             end_convert:
-                bgt $s6, 8, too_large
+                bgt $s6, 8, large_num
                 li $v0, 1 
-                j end_s2
-            too_large:
+                j end_string
+            large_num:
                 li $v0, 0 
-                la $t4, large_number
-                j end_s2
+                la $t4, too_large
+                j end_string
             not_a_number: 
                 li $v0, 0 
                 la $t4, not_valid
-            end_s2: 
+            end_string: 
                 addi $sp, $sp, -4 
                 sw $t4, ($sp)
                 addi $sp, $sp, -4 
                 sw $v0, ($sp)
                 la $ra, ($s7)
                 jr $ra
+   		sub_program1: 
+   				blt $a0, 48, invalid
+   				addi $v1, $0, 48 
+   				blt $a0, 58, valid
+
+   				blt $a0, 65, invalid 
+   				addi $v1, $0, 55
+   				blt $a0, 71, valid 
+   				blt $a0, 97, invalid 
+   				addi $v1, $0, 87 
+   				blt $a0, 103, valid 
+   				bgt $a0, 102, invalid 
+
+   			valid: 
+   				li $v0, 1
+   				jr $ra 
+   			invalid: 
+   				li $v0, 0 
+   				jr $ra 
+
+   		subprogram_3:
+	   		lw $t8, ($sp)
+	   		addi $sp, $sp, 4
+	   		lw $t7, ($sp)
+	   		beq $t8, 0, okay
+
+   			li $t6, 10 
+   			divu $t7, $t6
+   			li $v0, 1 
+   			mflo $a0
+   			beq $a0, 0, foo
+   			syscall 
+   		foo: 
+   			mfhi $a0 
+   			syscall 
+   			j exit
+   		okay: 
+   			li $v0, 4 
+   			la $a0, ($t7)
+   			syscall 
+   		exit: 
+   			jr $ra 
